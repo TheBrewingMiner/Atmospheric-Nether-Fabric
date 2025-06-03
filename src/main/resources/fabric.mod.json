@@ -1,29 +1,29 @@
 {
   "schemaVersion": 1,
-  "id": "modid",
+  "id": "atmospheric_nether",
   "version": "${version}",
 
-  "name": "Example Mod",
+  "name": "Atmospheric Nether",
   "description": "This is an example description! Tell everyone what your mod is about!",
   "authors": [
     "Me!"
   ],
   "contact": {
     "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+    "sources": "https://github.com/TheBrewingMiner/Atmospheric-Nether-Fabric"
   },
 
-  "license": "CC0-1.0",
+  "license": "All Rights Reserved",
   "icon": "assets/modid/icon.png",
 
   "environment": "*",
   "entrypoints": {
     "main": [
-      "net.fabricmc.example.ExampleMod"
+      "net.thebrewingminer.atmosphericnether.AtmosphericNether"
     ]
   },
   "mixins": [
-    "modid.mixins.json"
+    "atmospheric_nether.mixins.json"
   ],
 
   "depends": {
