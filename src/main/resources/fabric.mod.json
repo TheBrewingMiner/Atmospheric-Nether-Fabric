@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
   "id": "atmospheric_nether",
-  "version": "${version}",
+  "version": "2.0.0-1.19.2",
 
   "name": "Atmospheric Nether",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "description": "An atmospheric, new-ish Nether!",
   "authors": [
-    "Me!"
+    "TheBrewingMiner"
   ],
   "contact": {
     "homepage": "https://fabricmc.net/",
