@@ -5,7 +5,8 @@
   "refmap": "atmosphericnether.refmap.json",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "AquiferMixin"
+    "AquiferMixin",
+    "ZoglinSpawnMixin"
   ],
   "client": [],
   "injectors": {
