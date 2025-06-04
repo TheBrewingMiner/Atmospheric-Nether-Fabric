@@ -1,13 +1,13 @@
 package net.thebrewingminer.atmosphericnether;
 
 import net.fabricmc.api.ModInitializer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import net.thebrewingminer.atmosphericnether.custom.feature.ModConfiguredFeature;
 
 public class AtmosphericNether implements ModInitializer {
 	public static final String MOD_ID = "atmospheric_nether";
-	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
 	@Override
-	public void onInitialize() {}
+	public void onInitialize() {
+		ModConfiguredFeature.register();
+	}
 }
