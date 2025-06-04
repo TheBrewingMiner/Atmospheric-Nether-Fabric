@@ -1,6 +1,7 @@
 package net.thebrewingminer.atmosphericnether;
 
 import net.fabricmc.api.ModInitializer;
+import net.thebrewingminer.atmosphericnether.custom.events.ZoglinSpawnHandler;
 import net.thebrewingminer.atmosphericnether.custom.feature.ModConfiguredFeature;
 
 public class AtmosphericNether implements ModInitializer {
@@ -9,5 +10,6 @@ public class AtmosphericNether implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		ModConfiguredFeature.register();
+		ZoglinSpawnHandler.registerSpawning();
 	}
 }
