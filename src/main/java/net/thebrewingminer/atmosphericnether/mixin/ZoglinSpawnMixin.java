@@ -3,11 +3,7 @@ package net.thebrewingminer.atmosphericnether.mixin;
 import net.minecraft.entity.EntityData;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.mob.Hoglin;
-import net.minecraft.entity.mob.HoglinEntity;
-import net.minecraft.entity.mob.Monster;
-import net.minecraft.entity.mob.ZoglinEntity;
-import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.entity.mob.*;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
@@ -17,9 +13,9 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
 @Mixin(ZoglinEntity.class)
-public abstract class ZoglinSpawnMixin extends AnimalEntity implements Monster, Hoglin {
+public abstract class ZoglinSpawnMixin extends HostileEntity implements Monster, Hoglin {
 
-    protected ZoglinSpawnMixin(EntityType<? extends HoglinEntity> entityType, World world) {
+    protected ZoglinSpawnMixin(EntityType<? extends HostileEntity> entityType, World world) {
         super(entityType, world);
     }
 
