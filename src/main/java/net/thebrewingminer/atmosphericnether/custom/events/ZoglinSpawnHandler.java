@@ -2,7 +2,6 @@ package net.thebrewingminer.atmosphericnether.custom.events;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnRestriction;
-import net.minecraft.entity.mob.ZoglinEntity;
 import net.minecraft.world.Heightmap;
 import net.thebrewingminer.atmosphericnether.custom.entity.ZoglinHelper;
 
