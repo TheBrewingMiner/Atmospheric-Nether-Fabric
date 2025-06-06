@@ -8,7 +8,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
-import net.thebrewingminer.atmosphericnether.custom.entity.EndermanAggroData;
+import net.thebrewingminer.atmosphericnether.custom.entity.IDisturbedBiomeFlag;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(EndermanEntity.class)
-public abstract class EndermanSpawnAggroMixin extends MobEntity implements EndermanAggroData.DisturbedBiomeFlag {
+public abstract class EndermanSpawnAggroMixin extends MobEntity implements IDisturbedBiomeFlag {
 
     public EndermanSpawnAggroMixin(EntityType<? extends MobEntity> type, World world) {
         super(type, world);

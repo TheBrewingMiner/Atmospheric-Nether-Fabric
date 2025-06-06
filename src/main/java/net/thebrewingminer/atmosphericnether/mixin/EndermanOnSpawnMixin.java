@@ -13,11 +13,11 @@ import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
+import net.thebrewingminer.atmosphericnether.custom.entity.IDisturbedBiomeFlag;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import net.thebrewingminer.atmosphericnether.custom.entity.EndermanAggroData;
 
 @Mixin(MobEntity.class)
 public abstract class EndermanOnSpawnMixin extends LivingEntity {
@@ -28,7 +28,7 @@ public abstract class EndermanOnSpawnMixin extends LivingEntity {
     @Inject(method = "initialize", at = @At("TAIL"))
     private void onInitialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, EntityData entityData, NbtCompound entityNbt, CallbackInfoReturnable<EntityData> cir) {
         if ((Object)this instanceof EndermanEntity enderman) {
-            EndermanAggroData.DisturbedBiomeFlag disturbedBiomeFlag = (EndermanAggroData.DisturbedBiomeFlag) enderman;
+            IDisturbedBiomeFlag disturbedBiomeFlag = (IDisturbedBiomeFlag) enderman;
             RegistryKey<Biome> biomeKey = world.getBiome(enderman.getBlockPos()).getKey().orElse(null);
             Identifier dispiritedForest = new Identifier("tbm_nether", "forests/dispirited_forest");
             Identifier oldGrowthDispiritedForest = new Identifier("tbm_nether", "forests/old_growth_dispirited_forest");
