@@ -8,6 +8,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
+import net.thebrewingminer.atmosphericnether.custom.entity.EndermanAggroData;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -15,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(EndermanEntity.class)
-public abstract class EndermanSpawnAggroMixin extends MobEntity {
+public abstract class EndermanSpawnAggroMixin extends MobEntity implements EndermanAggroData.DisturbedBiomeFlag {
 
     public EndermanSpawnAggroMixin(EntityType<? extends MobEntity> type, World world) {
         super(type, world);
@@ -23,6 +24,16 @@ public abstract class EndermanSpawnAggroMixin extends MobEntity {
 
     @Unique
     private boolean spawnedInDisturbedBiome = false;
+
+    @Override
+    public boolean isSpawnedInDisturbedBiome() {
+        return spawnedInDisturbedBiome;
+    }
+
+    @Override
+    public void setSpawnedInDisturbedBiome(boolean value) {
+        this.spawnedInDisturbedBiome = value;
+    }
 
     @Unique
     private int aggroCooldown = 0;
@@ -82,6 +93,7 @@ public abstract class EndermanSpawnAggroMixin extends MobEntity {
 
         if (closestPlayer != null) {
             enderman.getWorld().playSound(this.getX(), this.getEyeY(), this.getZ(), SoundEvents.ENTITY_ENDERMAN_STARE, this.getSoundCategory(), 2.5F, 1.0F, false);
+            enderman.getWorld().playSound(this.getX(), this.getEyeY(), this.getZ(), SoundEvents.ENTITY_ENDERMAN_SCREAM, this.getSoundCategory(), 2.5F, 1.0F, false);
             enderman.setTarget(closestPlayer);
             enderman.setAttacking(true);
         }
