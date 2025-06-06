@@ -4,14 +4,15 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.mob.EndermanEntity;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import net.thebrewingminer.atmosphericnether.custom.entity.EndermanAggroData;
 
 @Mixin(EndermanEntity.class)
 public abstract class EndermanSpawnAggroMixin extends MobEntity {
@@ -20,10 +21,29 @@ public abstract class EndermanSpawnAggroMixin extends MobEntity {
         super(type, world);
     }
 
-    @Inject(method = "initDataTracker", at = @At("TAIL"))
-    private void registerCustomTrackedData(CallbackInfo ci) {
-        this.dataTracker.startTracking(EndermanAggroData.SPAWNED_IN_DISTURBED_BIOME, false);
-        this.dataTracker.startTracking(EndermanAggroData.AGGRO_COOLDOWN, 0);
+    @Unique
+    private boolean spawnedInDisturbedBiome = false;
+
+    @Unique
+    private int aggroCooldown = 0;
+
+    @Inject(method = "writeCustomDataToNbt", at = @At("TAIL"))
+    private void writeAggroData(NbtCompound nbt, CallbackInfo ci) {
+
+        nbt.putBoolean("SpawnedInDisturbedBiome", this.spawnedInDisturbedBiome);
+        nbt.putInt("AggroCooldown", this.aggroCooldown);
+    }
+
+    @Inject(method = "readCustomDataFromNbt", at = @At("TAIL"))
+    private void readAggroData(NbtCompound nbt, CallbackInfo ci) {
+
+        if (nbt.contains("SpawnedInDisturbedBiome")) {
+            this.spawnedInDisturbedBiome = nbt.getBoolean("SpawnedInDisturbedBiome");
+        }
+
+        if (nbt.contains("AggroCooldown")) {
+            this.aggroCooldown = nbt.getInt("AggroCooldown");
+        }
     }
 
     @Inject(method = "mobTick", at = @At("TAIL"))
@@ -31,17 +51,16 @@ public abstract class EndermanSpawnAggroMixin extends MobEntity {
         if (this.getWorld().isClient) return;
         EndermanEntity enderman = (EndermanEntity) (Object) this;
 
-        if (!enderman.getDataTracker().get(EndermanAggroData.SPAWNED_IN_DISTURBED_BIOME)) return;
+        if (!this.spawnedInDisturbedBiome) return;
 
         final int cooldownCount = 180;
         if (enderman.getTarget() instanceof PlayerEntity) {
-            enderman.getDataTracker().set(EndermanAggroData.AGGRO_COOLDOWN, cooldownCount);
+            this.aggroCooldown = cooldownCount;
             return;
         }
 
-        int cooldown = enderman.getDataTracker().get(EndermanAggroData.AGGRO_COOLDOWN);
-        if (cooldown > 0) {
-            enderman.getDataTracker().set(EndermanAggroData.AGGRO_COOLDOWN, cooldown - 1);
+        if (this.aggroCooldown > 0) {
+            this.aggroCooldown--;
             return;
         }
 

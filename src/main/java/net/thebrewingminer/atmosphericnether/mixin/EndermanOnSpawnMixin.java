@@ -28,7 +28,7 @@ public abstract class EndermanOnSpawnMixin extends LivingEntity {
     @Inject(method = "initialize", at = @At("TAIL"))
     private void onInitialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, EntityData entityData, NbtCompound entityNbt, CallbackInfoReturnable<EntityData> cir) {
         if ((Object)this instanceof EndermanEntity enderman) {
-
+            EndermanAggroData.DisturbedBiomeFlag disturbedBiomeFlag = (EndermanAggroData.DisturbedBiomeFlag) enderman;
             RegistryKey<Biome> biomeKey = world.getBiome(enderman.getBlockPos()).getKey().orElse(null);
             Identifier dispiritedForest = new Identifier("tbm_nether", "forests/dispirited_forest");
             Identifier oldGrowthDispiritedForest = new Identifier("tbm_nether", "forests/old_growth_dispirited_forest");
@@ -39,7 +39,7 @@ public abstract class EndermanOnSpawnMixin extends LivingEntity {
             }
 
             if (spawnedInDisturbedBiome) {
-                enderman.getDataTracker().set(EndermanAggroData.SPAWNED_IN_DISTURBED_BIOME, true);
+                disturbedBiomeFlag.setSpawnedInDisturbedBiome(true);
             }
         }
     }
