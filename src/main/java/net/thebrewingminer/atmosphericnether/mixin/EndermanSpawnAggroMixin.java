@@ -5,6 +5,7 @@ import net.minecraft.entity.mob.EndermanEntity;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
@@ -92,8 +93,9 @@ public abstract class EndermanSpawnAggroMixin extends MobEntity implements IDist
         }
 
         if (closestPlayer != null) {
-            enderman.getWorld().playSound(this.getX(), this.getEyeY(), this.getZ(), SoundEvents.ENTITY_ENDERMAN_STARE, this.getSoundCategory(), 2.5F, 1.0F, false);
-            enderman.getWorld().playSound(this.getX(), this.getEyeY(), this.getZ(), SoundEvents.ENTITY_ENDERMAN_SCREAM, this.getSoundCategory(), 2.5F, 1.0F, false);
+            ServerWorld serverWorld = (ServerWorld) enderman.getWorld();
+            serverWorld.playSoundFromEntity(null, enderman, SoundEvents.ENTITY_ENDERMAN_STARE, this.getSoundCategory(), 2.5F, 1.0F);
+            serverWorld.playSoundFromEntity(null, enderman, SoundEvents.ENTITY_ENDERMAN_SCREAM, this.getSoundCategory(), 1.0F, 1.0F);
             enderman.setTarget(closestPlayer);
             enderman.setAttacking(true);
         }
