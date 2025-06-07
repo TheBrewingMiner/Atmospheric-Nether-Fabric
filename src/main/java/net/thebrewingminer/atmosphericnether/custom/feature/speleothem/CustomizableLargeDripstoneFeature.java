@@ -2,7 +2,6 @@ package net.thebrewingminer.atmosphericnether.custom.feature.speleothem;
 
 import com.mojang.serialization.Codec;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.math.BlockPos;
@@ -11,17 +10,17 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.floatprovider.FloatProvider;
 import net.minecraft.util.math.random.Random;
-import net.minecraft.world.Heightmap;
+import net.minecraft.world.Heightmap.Type;
 import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.util.CaveSurface;
 import net.minecraft.world.gen.feature.util.FeatureContext;
+import net.minecraft.world.gen.stateprovider.BlockStateProvider;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
 public class CustomizableLargeDripstoneFeature extends Feature<CustomizableLargeDripstoneConfiguration> {
-
     public CustomizableLargeDripstoneFeature(Codec<CustomizableLargeDripstoneConfiguration> codec) {
         super(codec);
     }
@@ -30,61 +29,82 @@ public class CustomizableLargeDripstoneFeature extends Feature<CustomizableLarge
         StructureWorldAccess structureWorldAccess = context.getWorld();
         BlockPos blockPos = context.getOrigin();
         CustomizableLargeDripstoneConfiguration config = context.getConfig();
-        Random random = context.getRandom();
+        BlockStateProvider blockStateProvider = config.block;
+        TagKey<Block> replaceableTag = config.baseTag;
 
-        BlockState blockToPlace = config.block.get(random, blockPos);
-        TagKey<Block> replaceable = config.baseTag;
+        System.out.println("[Dripstone] Using baseTag: " + config.baseTag.id());
+        System.out.println("[Dripstone] Customizable dripstone generate() called at: " + blockPos);
+        Random random = context.getRandom();
+        Block blockToPlace = blockStateProvider.get(random, blockPos).getBlock();
 
         if (!CustomizableLargeDripstoneUtils.canGenerate(structureWorldAccess, blockPos)) {
             return false;
         } else {
-            Optional<CaveSurface> optional = CaveSurface.create(structureWorldAccess, blockPos, config.floorToCeilingSearchRange, CustomizableLargeDripstoneUtils::canGenerate, (state) -> CustomizableLargeDripstoneUtils.canReplaceOrLava(state, blockToPlace, replaceable));
-            if (optional.isPresent() && optional.get() instanceof CaveSurface.Bounded bounded) {
+            Optional<CaveSurface> optional = CaveSurface.create(structureWorldAccess, blockPos, config.floorToCeilingSearchRange, CustomizableLargeDripstoneUtils::canGenerate, (state) -> CustomizableLargeDripstoneUtils.canReplaceOrLava(state, replaceableTag)
+            );
+            if (optional.isPresent() && optional.get() instanceof CaveSurface.Bounded) {
+                CaveSurface.Bounded bounded = (CaveSurface.Bounded)optional.get();
+                System.out.println("[Dripstone] CaveSurface bounded! Floor=" + bounded.getFloor() + ", Ceiling=" + bounded.getCeiling());
                 if (bounded.getHeight() < 4) {
+                    System.out.println("[Dripstone] Height too short: " + bounded.getHeight());
                     return false;
                 } else {
                     int i = (int)((float)bounded.getHeight() * config.maxColumnRadiusToCaveHeightRatio);
                     int j = MathHelper.clamp(i, config.columnRadius.getMin(), config.columnRadius.getMax());
                     int k = MathHelper.nextBetween(random, config.columnRadius.getMin(), j);
-                    CustomizableLargeDripstoneFeature.CustomizableDripstoneGenerator CustomizableDripstoneGenerator = createGenerator(blockPos.withY(bounded.getCeiling() - 1), false, random, k, config.stalactiteBluntness, config.heightScale);
-                    CustomizableLargeDripstoneFeature.CustomizableDripstoneGenerator CustomizableDripstoneGenerator2 = createGenerator(blockPos.withY(bounded.getFloor() + 1), true, random, k, config.stalagmiteBluntness, config.heightScale);
-                    CustomizableLargeDripstoneFeature.WindModifier windModifier;
-                    if (CustomizableDripstoneGenerator.generateWind(config) && CustomizableDripstoneGenerator2.generateWind(config)) {
-                        windModifier = new CustomizableLargeDripstoneFeature.WindModifier(blockPos.getY(), random, config.windSpeed);
+                    CustomizableLargeDripstoneGenerator dripstoneGenerator = createGenerator(blockPos.withY(bounded.getCeiling() - 1), false, random, k, config.stalactiteBluntness, config.heightScale);
+                    CustomizableLargeDripstoneGenerator dripstoneGenerator2 = createGenerator(blockPos.withY(bounded.getFloor() + 1), true, random, k, config.stalagmiteBluntness, config.heightScale);
+                    WindModifier windModifier;
+                    if (dripstoneGenerator.generateWind(config) && dripstoneGenerator2.generateWind(config)) {
+                        windModifier = new WindModifier(blockPos.getY(), random, config.windSpeed);
                     } else {
                         windModifier = CustomizableLargeDripstoneFeature.WindModifier.create();
                     }
 
-                    boolean bl = CustomizableDripstoneGenerator.canGenerate(structureWorldAccess, windModifier);
-                    boolean bl2 = CustomizableDripstoneGenerator2.canGenerate(structureWorldAccess, windModifier);
+                    boolean bl = dripstoneGenerator.canGenerate(structureWorldAccess, windModifier);
+                    boolean bl2 = dripstoneGenerator2.canGenerate(structureWorldAccess, windModifier);
                     if (bl) {
-                        CustomizableDripstoneGenerator.generate(structureWorldAccess, random, windModifier, config);
+                        dripstoneGenerator.generate(structureWorldAccess, random, windModifier, blockToPlace, replaceableTag);
                     }
 
                     if (bl2) {
-                        CustomizableDripstoneGenerator2.generate(structureWorldAccess, random, windModifier, config);
+                        dripstoneGenerator2.generate(structureWorldAccess, random, windModifier, blockToPlace, replaceableTag);
                     }
 
                     return true;
                 }
             } else {
+                System.out.println("[Dripstone] CaveSurface not bounded or not present");
                 return false;
             }
         }
     }
 
-    private static CustomizableLargeDripstoneFeature.CustomizableDripstoneGenerator createGenerator(BlockPos pos, boolean isStalagmite, Random random, int scale, FloatProvider bluntness, FloatProvider heightScale) {
-        return new CustomizableLargeDripstoneFeature.CustomizableDripstoneGenerator(pos, isStalagmite, scale, bluntness.get(random), heightScale.get(random));
+    private static CustomizableLargeDripstoneGenerator createGenerator(BlockPos pos, boolean isStalagmite, Random random, int scale, FloatProvider bluntness, FloatProvider heightScale) {
+        return new CustomizableLargeDripstoneGenerator(pos, isStalagmite, scale, bluntness.get(random), heightScale.get(random));
     }
 
-    static final class CustomizableDripstoneGenerator {
+    private void testGeneration(StructureWorldAccess world, BlockPos pos, CaveSurface.Bounded surface, WindModifier wind) {
+        world.setBlockState(wind.modify(pos.withY(surface.getCeiling() - 1)), Blocks.DIAMOND_BLOCK.getDefaultState(), 2);
+        world.setBlockState(wind.modify(pos.withY(surface.getFloor() + 1)), Blocks.GOLD_BLOCK.getDefaultState(), 2);
+
+        for(BlockPos.Mutable mutable = pos.withY(surface.getFloor() + 2).mutableCopy(); mutable.getY() < surface.getCeiling() - 1; mutable.move(Direction.UP)) {
+            BlockPos blockPos = wind.modify(mutable);
+            if (CustomizableLargeDripstoneUtils.canGenerate(world, blockPos) || world.getBlockState(blockPos).isOf(Blocks.DRIPSTONE_BLOCK)) {
+                world.setBlockState(blockPos, Blocks.CREEPER_HEAD.getDefaultState(), 2);
+            }
+        }
+
+    }
+
+    static final class CustomizableLargeDripstoneGenerator {
         private BlockPos pos;
         private final boolean isStalagmite;
         private int scale;
         private final double bluntness;
         private final double heightScale;
 
-        CustomizableDripstoneGenerator(BlockPos pos, boolean isStalagmite, int scale, double bluntness, double heightScale) {
+        CustomizableLargeDripstoneGenerator(BlockPos pos, boolean isStalagmite, int scale, double bluntness, double heightScale) {
             this.pos = pos;
             this.isStalagmite = isStalagmite;
             this.scale = scale;
@@ -104,7 +124,7 @@ public class CustomizableLargeDripstoneFeature extends Feature<CustomizableLarge
             return !this.isStalagmite ? this.pos.getY() : this.pos.getY() + this.getBaseScale();
         }
 
-        boolean canGenerate(StructureWorldAccess world, CustomizableLargeDripstoneFeature.WindModifier wind) {
+        boolean canGenerate(StructureWorldAccess world, WindModifier wind) {
             while(this.scale > 1) {
                 BlockPos.Mutable mutable = this.pos.mutableCopy();
                 int i = Math.min(10, this.getBaseScale());
@@ -132,7 +152,7 @@ public class CustomizableLargeDripstoneFeature extends Feature<CustomizableLarge
             return (int)CustomizableLargeDripstoneUtils.scaleHeightFromRadius(height, this.scale, this.heightScale, this.bluntness);
         }
 
-        void generate(StructureWorldAccess world, Random random, CustomizableLargeDripstoneFeature.WindModifier wind, CustomizableLargeDripstoneConfiguration config) {
+        void generate(StructureWorldAccess world, Random random, WindModifier wind, Block blockToPlace, TagKey<Block> replaceableTag) {
             for(int i = -this.scale; i <= this.scale; ++i) {
                 for(int j = -this.scale; j <= this.scale; ++j) {
                     float f = MathHelper.sqrt((float)(i * i + j * j));
@@ -145,15 +165,14 @@ public class CustomizableLargeDripstoneFeature extends Feature<CustomizableLarge
 
                             BlockPos.Mutable mutable = this.pos.add(i, 0, j).mutableCopy();
                             boolean bl = false;
-                            int l = this.isStalagmite ? world.getTopY(Heightmap.Type.WORLD_SURFACE_WG, mutable.getX(), mutable.getZ()) : Integer.MAX_VALUE;
+                            int l = this.isStalagmite ? world.getTopY(Type.WORLD_SURFACE_WG, mutable.getX(), mutable.getZ()) : Integer.MAX_VALUE;
 
                             for(int m = 0; m < k && mutable.getY() < l; ++m) {
                                 BlockPos blockPos = wind.modify(mutable);
                                 if (CustomizableLargeDripstoneUtils.canGenerateOrLava(world, blockPos)) {
                                     bl = true;
-                                    Block block = config.block.get(random, blockPos).getBlock();
-                                    world.setBlockState(blockPos, block.getDefaultState(), 2);
-                                } else if (bl && world.getBlockState(blockPos).isIn(config.baseTag)) {
+                                    world.setBlockState(blockPos, blockToPlace.getDefaultState(), 2);
+                                } else if (bl && world.getBlockState(blockPos).isIn(replaceableTag)) {
                                     break;
                                 }
 
@@ -188,8 +207,8 @@ public class CustomizableLargeDripstoneFeature extends Feature<CustomizableLarge
             this.wind = null;
         }
 
-        static CustomizableLargeDripstoneFeature.WindModifier create() {
-            return new CustomizableLargeDripstoneFeature.WindModifier();
+        static WindModifier create() {
+            return new WindModifier();
         }
 
         BlockPos modify(BlockPos pos) {

@@ -12,8 +12,8 @@ import net.minecraft.world.gen.feature.LargeDripstoneFeatureConfig;
 import net.minecraft.world.gen.stateprovider.BlockStateProvider;
 
 public class CustomizableLargeDripstoneConfiguration extends LargeDripstoneFeatureConfig {
-    BlockStateProvider block;
-    TagKey<Block> baseTag;
+    public final BlockStateProvider block;
+    public final TagKey<Block> baseTag;
 
     public static final Codec<CustomizableLargeDripstoneConfiguration> CODEC = RecordCodecBuilder.create((instance) -> instance.group(
         BlockStateProvider.TYPE_CODEC.fieldOf("block").forGetter((config) -> config.block),

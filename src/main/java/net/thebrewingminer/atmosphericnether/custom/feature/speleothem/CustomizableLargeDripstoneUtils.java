@@ -108,7 +108,10 @@ public class CustomizableLargeDripstoneUtils {
     }
 
     public static boolean canReplaceOrLava(BlockState state, TagKey<Block> replaceable) {
-        return canReplace(state,replaceable) || state.isOf(Blocks.LAVA);
+//        return canReplace(state, replaceable) || state.isOf(Blocks.LAVA);
+        boolean result = state.isIn(replaceable) || state.isOf(Blocks.LAVA);
+        System.out.println("[Dripstone] canReplaceOrLava? " + result + " for " + state + ", tag=" + replaceable.id());
+        return result;
     }
 
     public static boolean canReplace(BlockState state, TagKey<Block> replaceable) {
@@ -116,7 +119,10 @@ public class CustomizableLargeDripstoneUtils {
     }
 
     public static boolean canGenerate(BlockState state) {
-        return state.isAir() || state.isOf(Blocks.WATER);
+//        return state.isAir() || state.isOf(Blocks.WATER);
+        boolean result = state.isAir() || state.isOf(Blocks.WATER);
+        System.out.println("[Dripstone] canGenerate? " + result + " for " + state);
+        return result;
     }
 
     public static boolean cannotGenerate(BlockState state) {
