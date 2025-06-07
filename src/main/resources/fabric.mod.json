@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "atmospheric_nether",
-  "version": "2.0.0-1.19.3",
+  "version": "2.0.0-1.19.2",
 
   "name": "Atmospheric Nether",
   "description": "An atmospheric, new-ish Nether!",
@@ -30,9 +30,12 @@
   ],
 
   "depends": {
-    "fabricloader": ">=0.16.14",
+    "fabricloader": ">=0.14.11",
     "fabric-api": "*",
     "minecraft": "~1.19.3",
     "java": ">=17"
+  },
+  "suggests": {
+    "another-mod": "*"
   }
 }
