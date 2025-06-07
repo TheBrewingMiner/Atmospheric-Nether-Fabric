@@ -79,8 +79,8 @@ public class CustomizableLargeDripstoneUtils {
 
     }
 
-    protected static void generatePointedDripstone(WorldAccess world, BlockPos pos, Direction direction, int height, boolean merge, BlockState blockToPlace, TagKey<Block> replaceable) {
-        if (canReplace(world.getBlockState(pos.offset(direction.getOpposite())), blockToPlace, replaceable)) {
+    protected static void generatePointedDripstone(WorldAccess world, BlockPos pos, Direction direction, int height, boolean merge, TagKey<Block> replaceable) {
+        if (canReplace(world.getBlockState(pos.offset(direction.getOpposite())), replaceable)) {
             BlockPos.Mutable mutable = pos.mutableCopy();
             getDripstoneThickness(direction, height, merge, (state) -> {
                 if (state.isOf(Blocks.POINTED_DRIPSTONE)) {
@@ -107,13 +107,12 @@ public class CustomizableLargeDripstoneUtils {
         return Blocks.POINTED_DRIPSTONE.getDefaultState().with(PointedDripstoneBlock.VERTICAL_DIRECTION, direction).with(PointedDripstoneBlock.THICKNESS, thickness);
     }
 
-    public static boolean canReplaceOrLava(BlockState state, BlockState blockToPlace, TagKey<Block> replaceable) {
-        return canReplace(state, blockToPlace, replaceable) || state.isOf(Blocks.LAVA);
+    public static boolean canReplaceOrLava(BlockState state, TagKey<Block> replaceable) {
+        return canReplace(state,replaceable) || state.isOf(Blocks.LAVA);
     }
 
-    public static boolean canReplace(BlockState state, BlockState blockToPlace, TagKey<Block> replaceable) {
-        Block block = blockToPlace.getBlock();
-        return state.isOf(block) || state.isIn(replaceable);
+    public static boolean canReplace(BlockState state, TagKey<Block> replaceable) {
+        return state.isOf(Blocks.DRIPSTONE_BLOCK) || state.isIn(replaceable);
     }
 
     public static boolean canGenerate(BlockState state) {
