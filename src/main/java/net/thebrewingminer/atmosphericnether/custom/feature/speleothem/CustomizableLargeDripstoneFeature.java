@@ -32,8 +32,6 @@ public class CustomizableLargeDripstoneFeature extends Feature<CustomizableLarge
         BlockStateProvider blockStateProvider = config.block;
         TagKey<Block> replaceableTag = config.baseTag;
 
-        System.out.println("[Dripstone] Using baseTag: " + config.baseTag.id());
-        System.out.println("[Dripstone] Customizable dripstone generate() called at: " + blockPos);
         Random random = context.getRandom();
         Block blockToPlace = blockStateProvider.get(random, blockPos).getBlock();
 
@@ -44,9 +42,7 @@ public class CustomizableLargeDripstoneFeature extends Feature<CustomizableLarge
             );
             if (optional.isPresent() && optional.get() instanceof CaveSurface.Bounded) {
                 CaveSurface.Bounded bounded = (CaveSurface.Bounded)optional.get();
-                System.out.println("[Dripstone] CaveSurface bounded! Floor=" + bounded.getFloor() + ", Ceiling=" + bounded.getCeiling());
                 if (bounded.getHeight() < 4) {
-                    System.out.println("[Dripstone] Height too short: " + bounded.getHeight());
                     return false;
                 } else {
                     int i = (int)((float)bounded.getHeight() * config.maxColumnRadiusToCaveHeightRatio);
@@ -74,7 +70,6 @@ public class CustomizableLargeDripstoneFeature extends Feature<CustomizableLarge
                     return true;
                 }
             } else {
-                System.out.println("[Dripstone] CaveSurface not bounded or not present");
                 return false;
             }
         }
