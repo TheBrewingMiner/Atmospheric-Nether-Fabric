@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.tag.TagKey;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
@@ -32,7 +32,7 @@ public class CustomizableLargeDripstoneFeature extends Feature<CustomizableLarge
         CustomizableLargeDripstoneConfiguration config = context.getConfig();
         Random random = context.getRandom();
 
-        BlockState blockToPlace = config.block.getBlockState(random, blockPos);
+        BlockState blockToPlace = config.block.get(random, blockPos);
         TagKey<Block> replaceable = config.baseTag;
 
         if (!CustomizableLargeDripstoneUtils.canGenerate(structureWorldAccess, blockPos)) {
@@ -151,7 +151,7 @@ public class CustomizableLargeDripstoneFeature extends Feature<CustomizableLarge
                                 BlockPos blockPos = wind.modify(mutable);
                                 if (CustomizableLargeDripstoneUtils.canGenerateOrLava(world, blockPos)) {
                                     bl = true;
-                                    Block block = config.block.getBlockState(random, blockPos).getBlock();
+                                    Block block = config.block.get(random, blockPos).getBlock();
                                     world.setBlockState(blockPos, block.getDefaultState(), 2);
                                 } else if (bl && world.getBlockState(blockPos).isIn(config.baseTag)) {
                                     break;
