@@ -3,12 +3,11 @@ package net.thebrewingminer.atmosphericnether.custom.feature.speleothem;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.block.Block;
-import net.minecraft.tag.BlockTags;
-import net.minecraft.tag.TagKey;
-import net.minecraft.util.Identifier;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.tag.BlockTags;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.math.floatprovider.FloatProvider;
 import net.minecraft.util.math.intprovider.IntProvider;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.gen.feature.LargeDripstoneFeatureConfig;
 import net.minecraft.world.gen.stateprovider.BlockStateProvider;
 
@@ -18,8 +17,7 @@ public class CustomizableLargeDripstoneConfiguration extends LargeDripstoneFeatu
 
     public static final Codec<CustomizableLargeDripstoneConfiguration> CODEC = RecordCodecBuilder.create((instance) -> instance.group(
         BlockStateProvider.TYPE_CODEC.fieldOf("block").forGetter((config) -> config.block),
-        Identifier.CODEC
-            .xmap(id -> TagKey.of(Registry.BLOCK_KEY, id), TagKey::id)
+        TagKey.codec(RegistryKeys.BLOCK)
             .fieldOf("base_tag")
             .orElse(BlockTags.BASE_STONE_OVERWORLD)
             .forGetter(cfg -> cfg.baseTag),
