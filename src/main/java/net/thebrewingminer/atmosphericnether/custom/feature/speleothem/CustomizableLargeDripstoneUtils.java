@@ -16,7 +16,7 @@ import java.util.function.Consumer;
 
 public class CustomizableLargeDripstoneUtils {
 
-    public void CustomizableLargeDripstoneFeature() {}
+    public CustomizableLargeDripstoneUtils() {}
 
     protected static double scaleHeightFromRadius(double radius, double scale, double heightScale, double bluntness) {
         if (radius < bluntness) {
