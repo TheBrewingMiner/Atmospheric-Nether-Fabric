@@ -2,7 +2,6 @@ package net.thebrewingminer.atmosphericnether.custom.feature.speleothem;
 
 import com.mojang.serialization.Codec;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.tag.TagKey;
 import net.minecraft.util.math.BlockPos;
@@ -32,13 +31,12 @@ public class CustomizableLargeDripstoneFeature extends Feature<CustomizableLarge
         CustomizableLargeDripstoneConfiguration config = context.getConfig();
         Random random = context.getRandom();
 
-        BlockState blockToPlace = config.block.getBlockState(random, blockPos);
         TagKey<Block> replaceable = config.baseTag;
 
         if (!CustomizableLargeDripstoneUtils.canGenerate(structureWorldAccess, blockPos)) {
             return false;
         } else {
-            Optional<CaveSurface> optional = CaveSurface.create(structureWorldAccess, blockPos, config.floorToCeilingSearchRange, CustomizableLargeDripstoneUtils::canGenerate, (state) -> CustomizableLargeDripstoneUtils.canReplaceOrLava(state, blockToPlace, replaceable));
+            Optional<CaveSurface> optional = CaveSurface.create(structureWorldAccess, blockPos, config.floorToCeilingSearchRange, CustomizableLargeDripstoneUtils::canGenerate, (state) -> CustomizableLargeDripstoneUtils.canReplaceOrLava(state, replaceable));
             if (optional.isPresent() && optional.get() instanceof CaveSurface.Bounded bounded) {
                 if (bounded.getHeight() < 4) {
                     return false;
