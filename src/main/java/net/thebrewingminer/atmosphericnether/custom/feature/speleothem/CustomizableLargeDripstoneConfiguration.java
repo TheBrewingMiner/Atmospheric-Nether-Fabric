@@ -22,7 +22,7 @@ public class CustomizableLargeDripstoneConfiguration extends LargeDripstoneFeatu
             .xmap(id -> TagKey.of(Registry.BLOCK_KEY, id), TagKey::id)
             .fieldOf("base_tag")
             .orElse(BlockTags.BASE_STONE_OVERWORLD)
-            .forGetter(cfg -> cfg.baseTag),
+            .forGetter(config -> config.baseTag),
         Codec.intRange(1, 512).fieldOf("floor_to_ceiling_search_range").orElse(30).forGetter((config) -> config.floorToCeilingSearchRange),
         IntProvider.createValidatingCodec(1, 60).fieldOf("column_radius").forGetter((config) -> config.columnRadius),
         FloatProvider.createValidatedCodec(0.0F, 20.0F).fieldOf("height_scale").forGetter((config) -> config.heightScale),
