@@ -212,7 +212,7 @@ public class CustomizableLargeDripstoneFeature extends Feature<CustomizableLarge
             } else {
                 int i = this.y - pos.getY();
                 Vec3d vec3d = this.wind.multiply(i);
-                return pos.add(vec3d.x, 0.0, vec3d.z);
+                return pos.add((int)vec3d.x, 0, (int)vec3d.z);
             }
         }
     }
