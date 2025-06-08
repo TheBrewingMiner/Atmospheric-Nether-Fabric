@@ -23,7 +23,7 @@ public class CustomizableLargeDripstoneConfiguration extends LargeDripstoneFeatu
                     TagKey<Block> tagKey = TagKey.of(RegistryKeys.BLOCK, id);
                     return DataResult.success(tagKey);
                 } catch (Exception e) {
-                    return DataResult.error("Invalid tag id: " + idString);
+                    return DataResult.error(() -> ("Invalid tag id: " + idString));
                 }
             },
             tagKey -> DataResult.success(tagKey.id().toString())
