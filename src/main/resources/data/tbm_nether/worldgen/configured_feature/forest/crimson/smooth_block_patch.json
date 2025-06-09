@@ -4,10 +4,8 @@
     "surface": "ceiling",
     "depth": {
       "type": "minecraft:uniform",
-      "value": {
-        "min_inclusive": 1,
-        "max_inclusive": 3
-      }
+      "min_inclusive": 1,
+      "max_inclusive": 3
     },
     "vertical_range": 5,
     "extra_bottom_block_chance": 0.1,
@@ -15,10 +13,8 @@
     "vegetation_chance": 0,
     "xz_radius": {
       "type": "minecraft:uniform",
-      "value": {
-        "min_inclusive": 4,
-        "max_inclusive": 7
-      }
+      "min_inclusive": 4,
+      "max_inclusive": 7
     },
     "replaceable": "#tbm_nether:vegetation_can_replace",
     "ground_state": {
