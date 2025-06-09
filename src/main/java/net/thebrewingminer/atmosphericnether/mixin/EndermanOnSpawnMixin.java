@@ -6,7 +6,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.mob.EndermanEntity;
 import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.LocalDifficulty;
@@ -26,7 +25,7 @@ public abstract class EndermanOnSpawnMixin extends LivingEntity {
     }
 
     @Inject(method = "initialize", at = @At("TAIL"))
-    private void onInitialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, EntityData entityData, NbtCompound entityNbt, CallbackInfoReturnable<EntityData> cir) {
+    private void onInitialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, EntityData entityData, CallbackInfoReturnable<EntityData> cir) {
         if ((Object)this instanceof EndermanEntity enderman) {
             IDisturbedBiomeFlag disturbedBiomeFlag = (IDisturbedBiomeFlag) enderman;
             RegistryKey<Biome> biomeKey = world.getBiome(enderman.getBlockPos()).getKey().orElse(null);
