@@ -29,8 +29,8 @@ public abstract class EndermanOnSpawnMixin extends LivingEntity {
         if ((Object)this instanceof EndermanEntity enderman) {
             IDisturbedBiomeFlag disturbedBiomeFlag = (IDisturbedBiomeFlag) enderman;
             RegistryKey<Biome> biomeKey = world.getBiome(enderman.getBlockPos()).getKey().orElse(null);
-            Identifier dispiritedForest = new Identifier("tbm_nether", "forests/dispirited_forest");
-            Identifier oldGrowthDispiritedForest = new Identifier("tbm_nether", "forests/old_growth_dispirited_forest");
+            Identifier dispiritedForest = Identifier.of("tbm_nether", "forests/dispirited_forest");
+            Identifier oldGrowthDispiritedForest = Identifier.of("tbm_nether", "forests/old_growth_dispirited_forest");
             boolean spawnedInDisturbedBiome = false;
 
             if (biomeKey != null){

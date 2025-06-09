@@ -19,7 +19,7 @@ public class CustomizableLargeDripstoneConfiguration extends LargeDripstoneFeatu
     public static final Codec<TagKey<Block>> BLOCK_TAG_CODEC = Codec.STRING.flatXmap(       // Custom codec to wrap string from JSON file to what MC expects.
             idString -> {
                 try {
-                    Identifier id = new Identifier(idString);
+                    Identifier id = Identifier.of(idString);
                     TagKey<Block> tagKey = TagKey.of(RegistryKeys.BLOCK, id);
                     return DataResult.success(tagKey);
                 } catch (Exception e) {

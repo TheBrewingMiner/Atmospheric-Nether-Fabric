@@ -15,7 +15,7 @@ public class ModConfiguredFeature {
     public static void register() {
         Registry.register(
                 Registries.FEATURE,
-                new Identifier(AtmosphericNether.MOD_ID, "customizable_large_dripstone"),
+                Identifier.of(AtmosphericNether.MOD_ID, "customizable_large_dripstone"),
                 CUSTOMIZABLE_LARGE_DRIPSTONE
         );
     }
