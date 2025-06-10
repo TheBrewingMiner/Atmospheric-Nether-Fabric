@@ -50,11 +50,11 @@ public abstract class EndermanSpawnAggroMixin extends MobEntity implements IDist
     private void readAggroData(NbtCompound nbt, CallbackInfo ci) {
 
         if (nbt.contains("SpawnedInDisturbedBiome")) {
-            this.spawnedInDisturbedBiome = nbt.getBoolean("SpawnedInDisturbedBiome");
+            this.spawnedInDisturbedBiome = nbt.getBoolean("SpawnedInDisturbedBiome").orElse(false);
         }
 
         if (nbt.contains("AggroCooldown")) {
-            this.aggroCooldown = nbt.getInt("AggroCooldown");
+            this.aggroCooldown = nbt.getInt("AggroCooldown").orElse(0);
         }
     }
 
