@@ -1,29 +1,28 @@
 package net.thebrewingminer.atmosphericnether.mixin;
 
-import net.minecraft.entity.EntityData;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.mob.*;
-import net.minecraft.world.LocalDifficulty;
-import net.minecraft.world.ServerWorldAccess;
-import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.entity.mob.HostileEntity;
+import net.minecraft.entity.mob.ZoglinEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.random.Random;
+import net.minecraft.world.Difficulty;
+import net.minecraft.world.WorldAccess;
+import net.thebrewingminer.atmosphericnether.custom.entity.ZoglinHelper;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(ZoglinEntity.class)
-public abstract class ZoglinSpawnMixin extends HostileEntity implements Monster, Hoglin {
-
-    protected ZoglinSpawnMixin(EntityType<? extends HostileEntity> entityType, World world) {
-        super(entityType, world);
-    }
-
-    @Unique
-    public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData) {
-        if (world.getRandom().nextFloat() < 0.35F) {
-            this.setBaby(true);
+@Mixin(HostileEntity.class)
+public abstract class ZoglinSpawnMixin {
+    @Inject(method = "canSpawnIgnoreLightLevel", at = @At("HEAD"), cancellable = true)
+    private static void zoglinCanSpawn(EntityType<? extends HostileEntity> type, WorldAccess world, SpawnReason spawnReason, BlockPos pos, Random random, CallbackInfoReturnable<Boolean> cir){
+        if (type == EntityType.ZOGLIN){
+            boolean canSpawnIgnoreLightLevel = world.getDifficulty() != Difficulty.PEACEFUL && HostileEntity.canMobSpawn(type, world, spawnReason, pos, random);
+            boolean isNotOnWartBlock = ZoglinHelper.canSpawn((EntityType<ZoglinEntity>)type, world, spawnReason, pos, random);  // Explicitly cast type because IDE got mad.
+            boolean zoglinCanSpawn = canSpawnIgnoreLightLevel && isNotOnWartBlock;                                              // We already know the type is guaranteed if logic is in this block.
+            cir.setReturnValue(zoglinCanSpawn);
         }
-
-        return super.initialize(world, difficulty, spawnReason, entityData);
     }
 }
