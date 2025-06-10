@@ -3,7 +3,6 @@ package net.thebrewingminer.atmosphericnether.mixin;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.mob.HostileEntity;
-import net.minecraft.entity.mob.ZoglinEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.Difficulty;
@@ -20,7 +19,7 @@ public abstract class ZoglinSpawnMixin {
     private static void zoglinCanSpawn(EntityType<? extends HostileEntity> type, WorldAccess world, SpawnReason spawnReason, BlockPos pos, Random random, CallbackInfoReturnable<Boolean> cir){
         if (type == EntityType.ZOGLIN){
             boolean canSpawnIgnoreLightLevel = world.getDifficulty() != Difficulty.PEACEFUL && HostileEntity.canMobSpawn(type, world, spawnReason, pos, random);
-            boolean isNotOnWartBlock = ZoglinHelper.canSpawn((EntityType<ZoglinEntity>)type, world, spawnReason, pos, random);  // Explicitly cast type because IDE got mad.
+            boolean isNotOnWartBlock = ZoglinHelper.canSpawn(world, pos);  // Explicitly cast type because IDE got mad.
             boolean zoglinCanSpawn = canSpawnIgnoreLightLevel && isNotOnWartBlock;                                              // We already know the type is guaranteed if logic is in this block.
             cir.setReturnValue(zoglinCanSpawn);
         }
