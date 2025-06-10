@@ -62,13 +62,11 @@
         "charge": 1.2
       }
     },
-    "carvers": {
-      "air": [
-        "tbm_nether:nether_cave",
-        "tbm_nether:canyon",
-        "tbm_nether:cave_extra_underground"
-      ]
-    },
+    "carvers": [
+      "tbm_nether:nether_cave",
+      "tbm_nether:canyon",
+      "tbm_nether:cave_extra_underground"
+    ],
     "features": [
       [],
       [
