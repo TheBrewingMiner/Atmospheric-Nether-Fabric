@@ -2,7 +2,6 @@
   "temperature": 2,
   "downfall": 0,
   "has_precipitation": false,
-  "precipitation": "none",
   "effects": {
     "sky_color": 7254527,
     "fog_color": 1787717,
@@ -19,12 +18,17 @@
       "sound": "minecraft:ambient.soul_sand_valley.additions",
       "tick_chance": 0.0111
     },
-    "music": {
-      "sound": "minecraft:music.nether.soul_sand_valley",
-      "min_delay": 12000,
-      "max_delay": 24000,
-      "replace_current_music": false
-    },
+    "music": [
+      {
+        "weight": 1,
+        "data": {
+          "sound": "minecraft:music.nether.soul_sand_valley",
+          "min_delay": 12000,
+          "max_delay": 24000,
+          "replace_current_music": false
+        }
+      }
+    ],
     "particle": {
       "options": {
         "type": "minecraft:ash"
