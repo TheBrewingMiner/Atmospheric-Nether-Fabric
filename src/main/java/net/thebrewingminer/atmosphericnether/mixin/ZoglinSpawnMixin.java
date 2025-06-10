@@ -19,8 +19,8 @@ public abstract class ZoglinSpawnMixin {
     private static void zoglinCanSpawn(EntityType<? extends HostileEntity> type, WorldAccess world, SpawnReason spawnReason, BlockPos pos, Random random, CallbackInfoReturnable<Boolean> cir){
         if (type == EntityType.ZOGLIN){
             boolean canSpawnIgnoreLightLevel = world.getDifficulty() != Difficulty.PEACEFUL && HostileEntity.canMobSpawn(type, world, spawnReason, pos, random);
-            boolean isNotOnWartBlock = ZoglinHelper.canSpawn(world, pos);  // Explicitly cast type because IDE got mad.
-            boolean zoglinCanSpawn = canSpawnIgnoreLightLevel && isNotOnWartBlock;                                              // We already know the type is guaranteed if logic is in this block.
+            boolean isNotOnWartBlock = ZoglinHelper.canSpawn(world, pos);
+            boolean zoglinCanSpawn = canSpawnIgnoreLightLevel && isNotOnWartBlock;
             cir.setReturnValue(zoglinCanSpawn);
         }
     }
