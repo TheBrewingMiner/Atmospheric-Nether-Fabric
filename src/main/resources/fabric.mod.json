@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "atmospheric_nether",
-  "version": "2.0.0-1.21",
+  "version": "2.0.0_1.21.0-1",
 
   "name": "Atmospheric Nether",
   "description": "An atmospheric, new-ish Nether!",
