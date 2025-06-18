@@ -1,12 +1,14 @@
 package net.thebrewingminer.atmosphericnether.mixin;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.mob.EndermanEntity;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.storage.ReadView;
+import net.minecraft.storage.WriteView;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
 import net.thebrewingminer.atmosphericnether.custom.entity.IDisturbedBiomeFlag;
@@ -34,23 +36,17 @@ public abstract class EndermanSpawnAggroMixin extends MobEntity implements IDist
     @Unique
     private int aggroCooldown = 0;
 
-    @Inject(method = "writeCustomDataToNbt", at = @At("TAIL"))
-    private void writeAggroData(NbtCompound nbt, CallbackInfo ci) {
+    @Inject(method = "writeCustomData", at = @At("TAIL"))
+    private void writeAggroData(WriteView view, CallbackInfo ci) {
 
-        nbt.putBoolean("SpawnedInDisturbedBiome", this.spawnedInDisturbedBiome);
-        nbt.putInt("AggroCooldown", this.aggroCooldown);
+        view.putBoolean("SpawnedInDisturbedBiome", this.spawnedInDisturbedBiome);
+        view.putInt("AggroCooldown", this.aggroCooldown);
     }
 
-    @Inject(method = "readCustomDataFromNbt", at = @At("TAIL"))
-    private void readAggroData(NbtCompound nbt, CallbackInfo ci) {
-
-        if (nbt.contains("SpawnedInDisturbedBiome")) {
-            this.spawnedInDisturbedBiome = nbt.getBoolean("SpawnedInDisturbedBiome").orElse(false);
-        }
-
-        if (nbt.contains("AggroCooldown")) {
-            this.aggroCooldown = nbt.getInt("AggroCooldown").orElse(0);
-        }
+    @Inject(method = "readCustomData", at = @At("TAIL"))
+    private void readAggroData(ReadView view, CallbackInfo ci) {
+        this.spawnedInDisturbedBiome = view.read("SpawnedInDisturbedBiome", Codec.BOOL).orElse(false);
+        this.aggroCooldown = view.read("AggroCooldown", Codec.INT).orElse(0);
     }
 
     @Inject(method = "mobTick", at = @At("TAIL"))
