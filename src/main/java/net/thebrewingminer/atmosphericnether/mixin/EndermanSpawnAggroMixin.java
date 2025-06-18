@@ -27,11 +27,6 @@ public abstract class EndermanSpawnAggroMixin extends MobEntity implements IDist
     private boolean spawnedInDisturbedBiome = false;
 
     @Override
-    public boolean isSpawnedInDisturbedBiome() {
-        return spawnedInDisturbedBiome;
-    }
-
-    @Override
     public void setSpawnedInDisturbedBiome(boolean value) {
         this.spawnedInDisturbedBiome = value;
     }
